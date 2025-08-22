@@ -1,9 +1,5 @@
-#include <algorithm>
 #include <iostream>
-#include <memory>
-#include <numeric>
 #include <optional>
-#include <string>
 #include <vector>
 #include "../include/example.hpp"
 
