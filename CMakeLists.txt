@@ -51,16 +51,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # 如果有测试，可以添加测试支持
-option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TESTS "Build tests" ON)
 if(BUILD_TESTS)
     enable_testing()
     find_package(GTest REQUIRED)
     add_subdirectory(tests)
 endif()
-
-# 安装规则
-install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-)

@@ -10,6 +10,7 @@ CMakeFiles/
 cmake_install.cmake
 Makefile
 *.cmake
+.cache/
 
 # 编译输出
 *.o
