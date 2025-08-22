@@ -2,7 +2,7 @@
 #include <optional>
 #include <vector>
 #include "../include/example.hpp"
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 int main() {
     std::cout << "=== 现代C++17项目示例 ===" << '\n';
@@ -34,9 +34,6 @@ int main() {
     std::cout << "项目构建成功！" << '\n';
 
     // spdlog
-    spdlog::set_level(spdlog::level::debug);  // Set *global* log level to debug
-    spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
-
     spdlog::info("Welcome to spdlog!");
     spdlog::error("Some error message with arg: {}", 1);
 

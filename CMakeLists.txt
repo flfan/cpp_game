@@ -34,8 +34,9 @@ endif()
 
 # 查找spdlog
 if(NOT TARGET spdlog)
-    # Stand-alone build
-    find_package(spdlog REQUIRED)
+    message(STATUS "spdlog not found, building from source")
+    add_subdirectory(third_party/spdlog)
+    message(STATUS "spdlog built from source")
 endif()
 
 # 设置输出目录
