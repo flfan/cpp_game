@@ -35,7 +35,7 @@ BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: true
 BreakStringLiterals: true
 ColumnLimit: 120
-CommentPragmas: '^ IWYU pragma:'
+CommentPragmas: "^ IWYU pragma:"
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
@@ -70,7 +70,7 @@ SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInContainerLiterals: false
-SpacesInCStyleCasts: false
+# SpacesInCStyleCasts: false  # 已移除，LLVM 20不支持此选项
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 Standard: Cpp11

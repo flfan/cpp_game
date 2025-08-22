@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <optional>
-#include <memory>
+#include <string>
+#include <type_traits>
+#include <vector>
 
 namespace cpptest {
 
@@ -33,7 +33,7 @@ public:
      * @brief 获取数据对
      * @return 包含整数和字符串的pair
      */
-    std::pair<int, std::string> getData() const;
+    [[nodiscard]] std::pair<int, std::string> getData() const;
 
     /**
      * @brief 处理不同类型的值
@@ -41,8 +41,16 @@ public:
      * @param value 要处理的值
      * @return 处理后的结果
      */
-    template<typename T>
-    auto processValue(const T& value) const;
+    template <typename T>
+    auto processValue(const T& value) const {
+        if constexpr (std::is_integral_v<T>) {
+            return value * 2;
+        } else if constexpr (std::is_floating_point_v<T>) {
+            return value + 0.5;
+        } else {
+            return std::string("Unknown type");
+        }
+    }
 
     /**
      * @brief 在向量中查找值
@@ -50,14 +58,14 @@ public:
      * @param target 目标值
      * @return 找到的值或std::nullopt
      */
-    std::optional<int> findValue(const std::vector<int>& vec, int target) const;
+    [[nodiscard]] std::optional<int> findValue(const std::vector<int>& vec, int target) const;
 
     /**
      * @brief 计算向量的和
      * @param vec 输入向量
      * @return 所有元素的和
      */
-    int sumVector(const std::vector<int>& vec) const;
+    [[nodiscard]] int sumVector(const std::vector<int>& vec) const;
 };
 
 } // namespace cpptest
