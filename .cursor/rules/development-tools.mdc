@@ -1,0 +1,53 @@
+# 开发工具
+
+## 编译器要求
+
+- 支持C++17标准
+- 启用所有警告(-Wall -Wextra -Wpedantic)
+- 支持调试和性能分析
+
+## 代码质量工具
+
+### clang-format
+
+- 自动代码格式化
+- 基于Google风格指南
+- 4空格缩进
+- 保存时自动格式化
+
+### clang-tidy
+
+- 静态代码分析
+- 现代C++特性建议
+- 性能优化建议
+- 代码质量改进
+- 构建时集成
+
+## 构建工具
+
+### CMake
+
+- 版本要求: 3.16+
+- 自动检测源文件
+- 支持多种构建类型
+- 集成clang-tidy
+
+## 测试框架
+
+### Google Test
+
+- 单元测试支持
+- 测试覆盖率要求>80%
+- 集成测试覆盖主要功能
+
+## IDE配置
+
+### VSCode/Cursor
+
+- C++ IntelliSense配置
+- CMake集成
+- 调试配置
+- 任务配置
+- 实时clang-tidy分析 description: globs: alwaysApply: false
+
+---

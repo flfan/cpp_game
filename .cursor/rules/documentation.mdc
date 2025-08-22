@@ -1,0 +1,59 @@
+# 文档规范
+
+## 注释风格
+
+### Doxygen风格
+
+- 使用Doxygen风格的注释
+- 每个公共接口都有文档
+- 包含使用示例和注意事项
+
+### 注释格式
+
+````cpp
+/**
+ * @brief 函数简短描述
+ * @param param1 参数1描述
+ * @param param2 参数2描述
+ * @return 返回值描述
+ * @throws ExceptionType 异常说明
+ * @note 注意事项
+ * @example
+ * ```cpp
+ * auto result = function(1, "test");
+ * ```
+ */
+````
+
+## 文档类型
+
+### 代码文档
+
+- 函数和类说明
+- 参数和返回值描述
+- 使用示例
+- 异常说明
+
+### 项目文档
+
+- README.md: 项目概述
+- API文档: 接口说明
+- 架构文档: 系统设计
+- 部署文档: 部署指南
+
+## 文档要求
+
+- 所有公共接口必须有文档
+- 复杂逻辑需要详细说明
+- 包含使用示例
+- 说明注意事项和限制
+- 保持文档与代码同步
+
+## 文档工具
+
+- Doxygen: 代码文档生成
+- Markdown: 项目文档编写
+- PlantUML: 架构图绘制
+- Mermaid: 流程图绘制 description: globs: alwaysApply: false
+
+---

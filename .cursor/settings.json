@@ -1,0 +1,46 @@
+{
+    "project": {
+        "name": "现代C++17项目",
+        "description": "使用C++17标准和CMake构建工具的现代C++项目",
+        "language": "cpp",
+        "standard": "c++17"
+    },
+    "ai": {
+        "codeStyle": {
+            "indentation": "4spaces",
+            "braceStyle": "allman",
+            "namingConvention": {
+                "classes": "PascalCase",
+                "functions": "camelCase",
+                "variables": "camelCase",
+                "constants": "UPPER_CASE",
+                "namespaces": "lower_case",
+                "privateMemberSuffix": "_"
+            }
+        },
+        "preferences": {
+            "useModernCpp": true,
+            "preferSmartPointers": true,
+            "useRAII": true,
+            "preferConstexpr": true,
+            "useStructuredBindings": true,
+            "preferOptional": true,
+            "followCoreGuidelines": true
+        },
+        "tools": {
+            "formatter": "clang-format",
+            "linter": "clang-tidy",
+            "buildSystem": "cmake",
+            "testFramework": "googletest"
+        }
+    },
+    "rules": {
+        "enforceC++17": true,
+        "requireDocumentation": true,
+        "requireTests": true,
+        "maxFunctionLength": 80,
+        "maxComplexity": 25,
+        "requireHeaderGuards": false,
+        "preferPragmaOnce": true
+    }
+}

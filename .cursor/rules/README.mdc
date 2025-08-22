@@ -1,0 +1,40 @@
+# Cursor配置索引
+
+## 配置文件说明
+
+本目录包含Cursor编辑器的项目配置，使用MDC格式组织。
+
+## 配置文件列表
+
+### 核心配置
+
+- **project.mdc** - 项目基本信息和目标
+- **coding-standards.mdc** - 编码标准和代码风格
+- **project-structure.mdc** - 项目结构和文件组织
+
+### 开发工具
+
+- **development-tools.mdc** - 开发工具链配置
+- **testing.mdc** - 测试规范和最佳实践
+- **documentation.mdc** - 文档规范和注释要求
+
+### AI助手
+
+- **ai-assistant.mdc** - AI助手指导原则
+- **settings.json** - 项目特定设置
+
+## 使用说明
+
+1. 每个.mdc文件专注于特定领域
+2. 使用YAML frontmatter进行元数据配置
+3. 支持glob模式匹配特定文件类型
+4. 可以设置alwaysApply来控制应用范围
+
+## 配置优先级
+
+1. 特定文件的配置
+2. 目录级别的配置
+3. 项目级别的配置
+4. 全局默认配置 description: globs: alwaysApply: false
+
+---

@@ -1,0 +1,42 @@
+# 编码标准
+
+## C++17标准要求
+
+- 使用C++17标准
+- 遵循现代C++最佳实践
+- 使用RAII和智能指针
+- 优先使用constexpr和const
+- 使用namespace组织代码
+- 头文件使用#pragma once
+
+## 代码风格
+
+- 使用4空格缩进
+- 大括号使用Allman风格
+- 函数和类名使用PascalCase
+- 变量名使用camelCase
+- 常量使用UPPER_CASE
+- 私有成员变量使用下划线后缀
+
+## 最佳实践
+
+- 优先使用std::optional而不是指针表示可选值
+- 使用结构化绑定简化代码
+- 利用constexpr if进行编译时分支
+- 使用折叠表达式简化模板代码
+- 遵循Rule of Five/Zero
+- 使用clang-tidy检查代码质量
+- 遵循现代C++核心指南
+
+## 命名约定
+
+```yaml
+classes: PascalCase
+functions: camelCase
+variables: camelCase
+constants: UPPER_CASE
+namespaces: lower_case
+privateMembers: camelBack_
+```
+
+## description: globs: alwaysApply: false
