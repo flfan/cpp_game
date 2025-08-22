@@ -61,8 +61,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # 如果有测试，可以添加测试支持
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 if(BUILD_TESTS)
+    message(STATUS "Building tests")
     enable_testing()
     # 添加Google Test作为子目录
     add_subdirectory(third_party/googletest)
