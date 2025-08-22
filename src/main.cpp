@@ -3,6 +3,8 @@
 #include <vector>
 #include "../include/example.hpp"
 #include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 int main() {
     std::cout << "=== 现代C++17项目示例 ===" << '\n';
@@ -54,5 +56,11 @@ int main() {
     // remove (depending on SPDLOG_ACTIVE_LEVEL) the call on the release code.
     SPDLOG_TRACE("Some trace message with param {}", 42);
     SPDLOG_DEBUG("Some debug message");
+
+    // nlohmann_json
+    std::ifstream fileReader("example.json");
+    nlohmann::json data = nlohmann::json::parse(fileReader);
+    std::cout << data << '\n';
+
     return 0;
 }

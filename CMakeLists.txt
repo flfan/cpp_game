@@ -39,6 +39,13 @@ if(NOT TARGET spdlog)
     message(STATUS "spdlog built from source")
 endif()
 
+#nlohmann_json
+if(NOT TARGET nlohmann_json)
+    message(STATUS "nlohmann_json not found, building from source")
+    add_subdirectory(third_party/nlohmann_json)
+    message(STATUS "nlohmann_json built from source")
+endif()
+
 # 设置输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -53,6 +60,9 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # 添加spdlog
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
+
+# 添加nlohmann_json
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 # 设置包含目录
 target_include_directories(${PROJECT_NAME} PRIVATE
