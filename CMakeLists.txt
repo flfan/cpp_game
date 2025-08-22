@@ -32,6 +32,12 @@ if(ENABLE_CLANG_TIDY AND CLANG_TIDY_EXE)
     message(STATUS "clang-tidy enabled")
 endif()
 
+# 查找spdlog
+if(NOT TARGET spdlog)
+    # Stand-alone build
+    find_package(spdlog REQUIRED)
+endif()
+
 # 设置输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -43,6 +49,9 @@ file(GLOB_RECURSE HEADERS "include/*.hpp" "include/*.h")
 
 # 创建可执行文件
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+# 添加spdlog
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
 
 # 设置包含目录
 target_include_directories(${PROJECT_NAME} PRIVATE

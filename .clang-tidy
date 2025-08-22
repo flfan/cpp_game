@@ -1,49 +1,42 @@
----
-# clang-tidy配置文件 - 现代C++17项目
-Checks: >
-  *,
-  -abseil-*,
-  -altera-*,
-  -android-*,
-  -fuchsia-*,
-  -google-*,
-  -llvm*,
-  -zircon-*,
-  -readability-else-after-return,
-  -readability-static-accessed-through-instance,
-  -readability-avoid-const-params-in-decls,
-  -cppcoreguidelines-non-private-member-variables-in-classes,
-  -misc-non-private-member-variables-in-classes,
-  -modernize-return-braced-init-list,
+Checks: "cppcoreguidelines-*,
+  performance-*,
+  modernize-*,
+  google-*,
+  misc-*
+  cert-*,
+  readability-*,
+  clang-analyzer-*,
+  -performance-unnecessary-value-param,
   -modernize-use-trailing-return-type,
-  -modernize-avoid-c-arrays,
-  -cppcoreguidelines-avoid-c-arrays,
-  -hicpp-avoid-c-arrays,
-  -cppcoreguidelines-pro-bounds-constant-array-index,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -hicpp-no-array-decay,
+  -google-runtime-references,
+  -misc-non-private-member-variables-in-classes,
+  -readability-braces-around-statements,
+  -google-readability-braces-around-statements,
   -cppcoreguidelines-avoid-magic-numbers,
   -readability-magic-numbers,
-  -cert-err58-cpp,
-  -hicpp-special-member-functions,
-  -cppcoreguidelines-special-member-functions,
+  -readability-magic-numbers,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-avoid-c-arrays,
+  -modernize-avoid-c-arrays,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -readability-named-parameter,
-  -misc-unused-parameters
+  -cert-env33-c
+"
 
-# 警告视为错误
 WarningsAsErrors: ""
+HeaderFilterRegex: "*spdlog/[^f].*"
+FormatStyle: none
 
-# 头文件过滤器
-HeaderFilterRegex: "(src/.*|include/.*|tests/.*)"
-
-# 分析临时对象（已移除，LLVM 20不支持此选项）
-
-# 格式化风格
-FormatStyle: file
-
-# 检查选项
 CheckOptions:
-  # 现代化检查
+  - key: google-readability-braces-around-statements.ShortStatementLines
+    value: "1"
+  - key: google-readability-function-size.StatementThreshold
+    value: "800"
+  - key: google-readability-namespace-comments.ShortNamespaceLines
+    value: "10"
+  - key: google-readability-namespace-comments.SpacesBeforeComments
+    value: "2"
   - key: modernize-loop-convert.MaxCopySize
     value: "16"
   - key: modernize-loop-convert.MinConfidence
@@ -56,61 +49,3 @@ CheckOptions:
     value: llvm
   - key: modernize-use-nullptr.NullMacros
     value: "NULL"
-
-  # 可读性检查
-  - key: readability-identifier-naming.NamespaceCase
-    value: lower_case
-  - key: readability-identifier-naming.ClassCase
-    value: CamelCase
-  - key: readability-identifier-naming.StructCase
-    value: CamelCase
-  - key: readability-identifier-naming.FunctionCase
-    value: camelBack
-  - key: readability-identifier-naming.VariableCase
-    value: camelBack
-  - key: readability-identifier-naming.ParameterCase
-    value: camelBack
-  - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.ConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.StaticConstantCase
-    value: UPPER_CASE
-  - key: readability-identifier-naming.MemberCase
-    value: camelBack
-  - key: readability-identifier-naming.PrivateMemberSuffix
-    value: "_"
-  - key: readability-identifier-naming.ProtectedMemberSuffix
-    value: "_"
-
-  # 性能检查
-  - key: performance-for-range-copy.WarnOnAllAutoCopies
-    value: "true"
-  - key: performance-for-range-copy.AllowedTypes
-    value: ""
-  - key: performance-unnecessary-value-param.AllowedTypes
-    value: ""
-
-  # C++核心指南检查
-  - key: cppcoreguidelines-explicit-virtual-functions.IgnoreDestructors
-    value: "true"
-  - key: cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
-    value: "true"
-
-  # 其他检查
-  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
-    value: "true"
-  - key: readability-function-cognitive-complexity.Threshold
-    value: "25"
-  - key: readability-function-size.LineThreshold
-    value: "80"
-  - key: readability-function-size.StatementThreshold
-    value: "800"
-  - key: readability-function-size.BranchThreshold
-    value: "20"
-  - key: readability-function-size.ParameterThreshold
-    value: "10"
-  - key: readability-function-size.NestingThreshold
-    value: "4"
-  - key: readability-function-size.VariableThreshold
-    value: "20"
