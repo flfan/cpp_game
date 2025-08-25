@@ -55,6 +55,15 @@ endif()
 #SDL3
 add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
 
+#SDL_image
+add_subdirectory(third_party/SDL_image EXCLUDE_FROM_ALL)
+
+#SDL_ttf
+add_subdirectory(third_party/SDL_ttf EXCLUDE_FROM_ALL)
+
+#SDL_mixer
+add_subdirectory(third_party/SDL_mixer EXCLUDE_FROM_ALL)
+
 # 设置输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -77,7 +86,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
 # 添加SDL3
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+                        SDL3_image::SDL3_image
+                        SDL3_mixer::SDL3_mixer
+                        SDL3_ttf::SDL3_ttf
+                        SDL3::SDL3)
 
 # 设置包含目录
 target_include_directories(${PROJECT_NAME} PRIVATE
