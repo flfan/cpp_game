@@ -24,10 +24,26 @@ jobs:
     - name: Checkout submodules
       run: git submodule update --init --recursive --depth 1
 
+    - name: Install SDL3 build dependencies
+      run: |
+        sudo apt-get update
+        # X11 系列
+        sudo apt-get install -y \
+          libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev \
+          libxi-dev libxfixes-dev libxss-dev libwayland-dev libdecor-0-dev \
+          libegl1-mesa-dev libgl1-mesa-dev
+        # 如果你还需要音频、线程、共享库等额外功能，可继续补充
+        # sudo apt-get install -y libasound2-dev libpulse-dev libdbus-1-dev
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: |
+        cmake -B ${{github.workspace}}/build \
+              -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+              -DSDL_X11=ON \
+              -DSDL_WAYLAND=ON
+
 
     - name: Build
       # Build your program with the given configuration
