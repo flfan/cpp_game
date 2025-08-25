@@ -30,20 +30,19 @@ jobs:
 
           - os: macos-latest
             artifact_name: cppGame-macos
-            install_cmd: |
-              brew update
-              brew install sdl3
+            install_cmd: ""
             cmake_extra: ""
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive --depth 1
 
     - name: Install dependencies
       run: ${{ matrix.install_cmd }}
+
+    - name: Checkout submodules
+      run: git submodule update --init --recursive --depth 1
 
     - name: Configure CMake
       run: |
