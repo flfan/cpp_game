@@ -90,6 +90,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+# 设置资源目录
+# 复制assets文件夹到构建目录
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
 # 如果有测试，可以添加测试支持
 # option(BUILD_TESTS "Build tests" OFF)
 # if(BUILD_TESTS)

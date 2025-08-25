@@ -1,0 +1,5 @@
+// 保存时执行clang-format
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+}

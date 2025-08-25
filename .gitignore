@@ -23,7 +23,6 @@ Makefile
 *.lib
 
 # IDE文件
-.vscode/
 .idea/
 *.swp
 *.swo
