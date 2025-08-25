@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 project(cppTest VERSION 0.1.0 LANGUAGES C CXX)
 
 # 设置C++20标准
@@ -32,36 +32,28 @@ if(ENABLE_CLANG_TIDY AND CLANG_TIDY_EXE)
 endif()
 
 # 查找spdlog
-if(NOT TARGET spdlog)
-    message(STATUS "spdlog not found, building from source")
-    add_subdirectory(third_party/spdlog)
-    message(STATUS "spdlog built from source")
-endif()
+add_subdirectory(third_party/spdlog)
 
 #nlohmann_json
-if(NOT TARGET nlohmann_json)
-    message(STATUS "nlohmann_json not found, building from source")
-    add_subdirectory(third_party/nlohmann_json)
-    message(STATUS "nlohmann_json built from source")
-endif()
+add_subdirectory(third_party/nlohmann_json)
 
 #glm
-if(NOT TARGET glm)
-    message(STATUS "glm not found, building from source")
-    add_subdirectory(third_party/glm)
-    message(STATUS "glm built from source")
-endif()
+add_subdirectory(third_party/glm)
+
 
 #SDL3
 add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
 
 #SDL_image
+# set(SDLIMAGE_VENDORED ON)
 add_subdirectory(third_party/SDL_image EXCLUDE_FROM_ALL)
 
 #SDL_ttf
+set(SDLTTF_VENDORED ON)
 add_subdirectory(third_party/SDL_ttf EXCLUDE_FROM_ALL)
 
 #SDL_mixer
+set(SDLMIXER_VENDORED ON)
 add_subdirectory(third_party/SDL_mixer EXCLUDE_FROM_ALL)
 
 # 设置输出目录
@@ -77,16 +69,16 @@ file(GLOB_RECURSE HEADERS "include/*.hpp" "include/*.h")
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # 添加spdlog
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 
 # 添加nlohmann_json
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json)
 
 # 添加glm
-target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC glm::glm)
 
 # 添加SDL3
-target_link_libraries(${PROJECT_NAME} PRIVATE 
+target_link_libraries(${PROJECT_NAME} PUBLIC 
                         SDL3_image::SDL3_image
                         SDL3_mixer::SDL3_mixer
                         SDL3_ttf::SDL3_ttf
