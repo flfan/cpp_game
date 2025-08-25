@@ -1,71 +1,62 @@
-#include <iostream>
-#include <optional>
-#include <vector>
-#include "../include/example.hpp"
-#include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <glm/glm.hpp>
+/*
+  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
 
-int main() {
-    std::cout << "=== 现代C++17项目示例 ===" << '\n';
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    cpptest::Example example;
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
+#define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 
-    // 结构化绑定示例
-    auto [number, message] = example.getData();
-    std::cout << "结构化绑定: " << number << ", " << message << '\n';
+static SDL_Window *window = NULL;
+static SDL_Renderer *renderer = NULL;
 
-    // constexpr if示例
-    std::cout << "整数处理: " << example.processValue(10) << '\n';
-    std::cout << "浮点数处理: " << example.processValue(3.14) << '\n';
-    std::cout << "字符串处理: " << example.processValue("test") << '\n';
-
-    // std::optional示例
-    std::vector<int> numbers = {1, 2, 3, 4, 5};
-    auto result = example.findValue(numbers, 3);
-    if (result.has_value()) {
-        std::cout << "找到值: " << result.value() << '\n';
-    } else {
-        std::cout << "未找到值" << '\n';
+/* This function runs once at startup. */
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
+    /* Create the window */
+    if (!SDL_CreateWindowAndRenderer("Hello World", 800, 600, SDL_WINDOW_FULLSCREEN, &window,
+                                     &renderer)) {
+        SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
     }
-
-    // 折叠表达式 (C++17)
-    auto sum = example.sumVector(numbers);
-    std::cout << "向量求和: " << sum << '\n';
-
-    std::cout << "项目构建成功！" << '\n';
-
-    // spdlog
-    spdlog::info("Welcome to spdlog!");
-    spdlog::error("Some error message with arg: {}", 1);
-
-    spdlog::warn("Easy padding in numbers like {:08d}", 12);
-    spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
-    spdlog::info("Support for floats {:03.2f}", 1.23456);
-    spdlog::info("Positional args are {1} {0}..", "too", "supported");
-    spdlog::info("{:<30}", "left aligned");
-
-    spdlog::set_level(spdlog::level::debug);  // Set *global* log level to debug
-    spdlog::debug("This message should be displayed..");
-
-    // change log pattern
-    spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
-
-    // Compile time log levels
-    // Note that this does not change the current log level, it will only
-    // remove (depending on SPDLOG_ACTIVE_LEVEL) the call on the release code.
-    SPDLOG_TRACE("Some trace message with param {}", 42);
-    SPDLOG_DEBUG("Some debug message");
-
-    // nlohmann_json
-    std::ifstream fileReader("example.json");
-    nlohmann::json data = nlohmann::json::parse(fileReader);
-    std::cout << data << '\n';
-
-    // glm
-    glm::vec3 vec(1.0F, 2.0F, 3.0F);
-    std::cout << vec.x << vec.y << vec.z << '\n';
-
-    return 0;
+    return SDL_APP_CONTINUE;
 }
+
+/* This function runs when a new event (mouse input, keypresses, etc) occurs. */
+SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
+    if (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_QUIT) {
+        return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+    }
+    return SDL_APP_CONTINUE;
+}
+
+/* This function runs once per frame, and is the heart of the program. */
+SDL_AppResult SDL_AppIterate(void *appstate) {
+    const char *message = "Hello World!";
+    int w = 0, h = 0;
+    float x, y;
+    const float scale = 4.0f;
+
+    /* Center the message and scale it up */
+    SDL_GetRenderOutputSize(renderer, &w, &h);
+    SDL_SetRenderScale(renderer, scale, scale);
+    x = ((w / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * SDL_strlen(message)) / 2;
+    y = ((h / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE) / 2;
+
+    /* Draw the message */
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDebugText(renderer, x, y, message);
+    SDL_RenderPresent(renderer);
+
+    return SDL_APP_CONTINUE;
+}
+
+/* This function runs once at shutdown. */
+void SDL_AppQuit(void *appstate, SDL_AppResult result) {}

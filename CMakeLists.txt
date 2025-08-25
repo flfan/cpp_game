@@ -1,16 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
 project(cppTest VERSION 1.0.0 LANGUAGES CXX)
 
-# 设置C++17标准
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+# 设置C++20标准
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 设置编译选项
 if(MSVC)
     add_compile_options(/W4)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic -std=c++17)
+    add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # 查找clang-tidy
@@ -53,6 +52,9 @@ if(NOT TARGET glm)
     message(STATUS "glm built from source")
 endif()
 
+#SDL3
+add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
+
 # 设置输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -74,6 +76,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 # 添加glm
 target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
+# 添加SDL3
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+
 # 设置包含目录
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -81,11 +86,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # 如果有测试，可以添加测试支持
-option(BUILD_TESTS "Build tests" OFF)
-if(BUILD_TESTS)
-    message(STATUS "Building tests")
-    enable_testing()
-    # 添加Google Test作为子目录
-    add_subdirectory(third_party/googletest)
-    add_subdirectory(tests)
-endif()
+# option(BUILD_TESTS "Build tests" OFF)
+# if(BUILD_TESTS)
+#     message(STATUS "Building tests")
+#     enable_testing()
+#     # 添加Google Test作为子目录
+#     add_subdirectory(third_party/googletest)
+#     add_subdirectory(tests)
+# endif()
