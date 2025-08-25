@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(cppTest VERSION 0.1.0 LANGUAGES C CXX)
+project(cppGame VERSION 0.1.0 LANGUAGES C CXX)
 
 # 设置C++20标准
 set(CMAKE_CXX_STANDARD 20)
@@ -53,7 +53,7 @@ set(SDLTTF_VENDORED ON)
 add_subdirectory(third_party/SDL_ttf EXCLUDE_FROM_ALL)
 
 #SDL_mixer
-set(SDLMIXER_VENDORED ON)
+# set(SDLMIXER_VENDORED ON)
 add_subdirectory(third_party/SDL_mixer EXCLUDE_FROM_ALL)
 
 # 设置输出目录
