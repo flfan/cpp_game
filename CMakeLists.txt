@@ -46,6 +46,13 @@ if(NOT TARGET nlohmann_json)
     message(STATUS "nlohmann_json built from source")
 endif()
 
+#glm
+if(NOT TARGET glm)
+    message(STATUS "glm not found, building from source")
+    add_subdirectory(third_party/glm)
+    message(STATUS "glm built from source")
+endif()
+
 # 设置输出目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -63,6 +70,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
 
 # 添加nlohmann_json
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+
+# 添加glm
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 
 # 设置包含目录
 target_include_directories(${PROJECT_NAME} PRIVATE

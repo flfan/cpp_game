@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <glm/glm.hpp>
 
 int main() {
     std::cout << "=== 现代C++17项目示例 ===" << '\n';
@@ -61,6 +62,10 @@ int main() {
     std::ifstream fileReader("example.json");
     nlohmann::json data = nlohmann::json::parse(fileReader);
     std::cout << data << '\n';
+
+    // glm
+    glm::vec3 vec(1.0F, 2.0F, 3.0F);
+    std::cout << vec.x << vec.y << vec.z << '\n';
 
     return 0;
 }
