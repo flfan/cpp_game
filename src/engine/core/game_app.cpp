@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include "config.h"
 #include "time.h"
+#include "../resource/resource_manager.h"
 #include "../input/input_manager.h"
 
 namespace engine::core {
@@ -73,10 +74,18 @@ bool GameApp::init() {
         spdlog::error("初始化时间管理失败。");
         return false;
     }
+    if (!initResourceManager()) {
+        spdlog::error("初始化资源管理器失败。");
+        return false;
+    }
     if (!initInputManager()) {
         spdlog::error("初始化输入管理器失败。");
         return false;
     }
+
+    // 测试资源管理器
+    testResourceManager();
+
     is_running_ = true;
     spdlog::info("初始化 GameApp 成功。");
     return true;
@@ -134,6 +143,17 @@ bool GameApp::initTime() {
     return true;
 }
 
+bool GameApp::initResourceManager() {
+    try {
+        resource_manager_ = std::make_unique<engine::resource::ResourceManager>(sdl_renderer_);
+    } catch (const std::exception& e) {
+        spdlog::error("初始化资源管理器失败: {}", e.what());
+        return false;
+    }
+    spdlog::trace("资源管理器初始化成功。");
+    return true;
+}
+
 bool GameApp::initInputManager() {
     try {
         input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_, config_.get());
@@ -147,6 +167,8 @@ bool GameApp::initInputManager() {
 
 void GameApp::close() {
     spdlog::trace("关闭 GameApp ...");
+    // 为了确保正确的销毁顺序，有些智能指针对象也需要手动管理
+    resource_manager_.reset();
 
     if (sdl_renderer_ != nullptr) {
         SDL_DestroyRenderer(sdl_renderer_);
@@ -158,6 +180,16 @@ void GameApp::close() {
     }
     SDL_Quit();
     is_running_ = false;
+}
+
+void GameApp::testResourceManager() {
+    resource_manager_->getTexture("assets/textures/Actors/eagle-attack.png");
+    resource_manager_->getFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
+    resource_manager_->getSound("assets/audio/button_click.wav");
+
+    resource_manager_->unloadTexture("assets/textures/Actors/eagle-attack.png");
+    resource_manager_->unloadFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
+    resource_manager_->unloadSound("assets/audio/button_click.wav");
 }
 
 void GameApp::testInputManager() {
