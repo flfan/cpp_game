@@ -4,6 +4,7 @@ name: CMake multi-platform
 on:
   push:
     branches: [ "main" ]
+    tags: [ "v*" ]
   pull_request:
     branches: [ "main" ]
   # 允许手动触发
@@ -69,7 +70,7 @@ jobs:
       if: runner.os == 'linux'
       run: |
         mkdir -p package
-        cp -r bin package/
+        cp -r bin/ package/
         tar -czf ${{ matrix.artifact_name }}.tar.gz -C package .
 
     - name: Package (macOS)
@@ -78,12 +79,13 @@ jobs:
       run: |
         mkdir -p package
         # 拷可执行文件
-        cp -r bin package/
+        cp -r bin/ package/
 
         # 拷所有自己编译出的 *.dylib（SDL3、SDL3_image、SDL3_mixer、SDL3_ttf…）
         # 注意：下面两行假设它们和 cppGame 同目录或 build/lib 目录
         find . -name '*.dylib' -exec cp {} package/ \;
-
+        # 去掉 quarantine 标记
+        xattr -cr package
         tar -czf cppGame-macos.tar.gz -C package .
 
     - name: Upload Artifact
