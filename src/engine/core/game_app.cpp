@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include "config.h"
 #include "time.h"
+#include "../input/input_manager.h"
 
 namespace engine::core {
 
@@ -22,7 +23,11 @@ void GameApp::run() {
     while (is_running_) {
         time_->update();
         auto delta_time = time_->getDeltaTime();
+        input_manager_->update();  // 每帧首先更新输入管理器
+
+        handleEvents();
         update(delta_time);
+        render();
     }
     close();
 }
@@ -30,6 +35,27 @@ void GameApp::run() {
 void GameApp::update(float /* delta_time */) {
     // 游戏逻辑更新
     // testCamera();
+}
+
+void GameApp::handleEvents() {
+    if (input_manager_->shouldQuit()) {
+        spdlog::trace("GameApp 收到来自 InputManager 的退出请求。");
+        is_running_ = false;
+        return;
+    }
+
+    testInputManager();
+}
+
+void GameApp::render() {
+    // 清除屏幕
+    SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
+    SDL_RenderClear(sdl_renderer_);
+
+    // 这里可以添加渲染代码
+
+    // 更新屏幕
+    SDL_RenderPresent(sdl_renderer_);
 }
 
 bool GameApp::init() {
@@ -45,6 +71,10 @@ bool GameApp::init() {
     }
     if (!initTime()) {
         spdlog::error("初始化时间管理失败。");
+        return false;
+    }
+    if (!initInputManager()) {
+        spdlog::error("初始化输入管理器失败。");
         return false;
     }
     is_running_ = true;
@@ -104,6 +134,17 @@ bool GameApp::initTime() {
     return true;
 }
 
+bool GameApp::initInputManager() {
+    try {
+        input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_, config_.get());
+    } catch (const std::exception& e) {
+        spdlog::error("初始化输入管理器失败: {}", e.what());
+        return false;
+    }
+    spdlog::trace("输入管理器初始化成功。");
+    return true;
+}
+
 void GameApp::close() {
     spdlog::trace("关闭 GameApp ...");
 
@@ -117,6 +158,31 @@ void GameApp::close() {
     }
     SDL_Quit();
     is_running_ = false;
+}
+
+void GameApp::testInputManager() {
+    std::vector<std::string> actions = {
+        "move_up",
+        "move_down",
+        "move_left",
+        "move_right",
+        "jump",
+        "attack",
+        "pause",
+        "MouseLeftClick",
+        "MouseRightClick"};
+
+    for (const auto& action : actions) {
+        if (input_manager_->isActionPressed(action)) {
+            spdlog::info(" {} 按下 ", action);
+        }
+        if (input_manager_->isActionReleased(action)) {
+            spdlog::info(" {} 抬起 ", action);
+        }
+        if (input_manager_->isActionDown(action)) {
+            spdlog::info(" {} 按下中 ", action);
+        }
+    }
 }
 
 }  // namespace engine::core

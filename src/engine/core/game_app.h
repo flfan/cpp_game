@@ -4,6 +4,9 @@
 // 前向声明, 减少头文件的依赖，增加编译速度
 struct SDL_Window;
 struct SDL_Renderer;
+namespace engine::input {
+class InputManager;
+}
 
 namespace engine::core {
 class Config;
@@ -17,6 +20,7 @@ private:
 
     std::unique_ptr<Config> config_;
     std::unique_ptr<Time> time_;
+    std::unique_ptr<engine::input::InputManager> input_manager_;
 
 public:
     GameApp();
@@ -45,5 +49,8 @@ private:
     [[nodiscard]] bool initSDL();
     [[nodiscard]] bool initConfig();
     [[nodiscard]] bool initTime();
+    [[nodiscard]] bool initInputManager();
+
+    void testInputManager();
 };
 }  // namespace engine::core
