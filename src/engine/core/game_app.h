@@ -7,6 +7,7 @@ struct SDL_Renderer;
 
 namespace engine::core {
 class Config;
+class Time;
 
 class GameApp final {
 private:
@@ -15,6 +16,7 @@ private:
     bool is_running_ = false;
 
     std::unique_ptr<Config> config_;
+    std::unique_ptr<Time> time_;
 
 public:
     GameApp();
@@ -42,5 +44,6 @@ private:
 
     [[nodiscard]] bool initSDL();
     [[nodiscard]] bool initConfig();
+    [[nodiscard]] bool initTime();
 };
 }  // namespace engine::core
