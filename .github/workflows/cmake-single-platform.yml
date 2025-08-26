@@ -45,9 +45,19 @@ jobs:
       run: git submodule update --init --recursive --depth 1
 
     - name: Configure CMake
+      if: runner.os == 'linux'
       run: |
         cmake -B build \
               -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+              ${{ matrix.cmake_extra }}
+
+    - name: Configure CMake (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        cmake -B build \
+              -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+              -DCMAKE_INSTALL_RPATH=@executable_path \
+              -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
               ${{ matrix.cmake_extra }}
 
     - name: Build
@@ -56,6 +66,7 @@ jobs:
 
     - name: Package
       working-directory: build
+      if: runner.os == 'linux'
       run: |
         mkdir -p package
         cp -r bin package/
