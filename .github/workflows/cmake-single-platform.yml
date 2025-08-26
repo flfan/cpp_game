@@ -85,7 +85,7 @@ jobs:
         # 注意：下面两行假设它们和 cppGame 同目录或 build/lib 目录
         find . -name '*.dylib' -exec cp {} package/ \;
         # 去掉 quarantine 标记
-        tar -czf /${{ matrix.artifact_name }}.tar.gz -C package .
+        tar -czf ${{ matrix.artifact_name }}.tar.gz -C package .
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
