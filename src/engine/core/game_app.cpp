@@ -20,6 +20,7 @@ GameApp::~GameApp() {
 }
 
 void GameApp::run() {
+    spdlog::set_level(spdlog::level::trace);
     if (!init()) {
         spdlog::error("初始化失败，无法运行游戏。");
         return;
