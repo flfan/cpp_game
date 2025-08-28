@@ -1,0 +1,9 @@
+#pragma once
+#include <glm/vec2.hpp>
+
+namespace engine::utils {
+struct Rect {
+    glm::vec2 position;
+    glm::vec2 size;
+};
+}  // namespace engine::utils

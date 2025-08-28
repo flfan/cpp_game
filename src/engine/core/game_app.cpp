@@ -1,41 +1,61 @@
 #include "game_app.h"
-#include <spdlog/spdlog.h>
-#include <SDL3/SDL.h>
-#include "config.h"
 #include "time.h"
 #include "../resource/resource_manager.h"
+#include "../render/renderer.h"
+#include "../render/camera.h"
 #include "../input/input_manager.h"
+#include "config.h"
+#include <SDL3/SDL.h>
+#include <spdlog/spdlog.h>
 
 namespace engine::core {
 
 GameApp::GameApp() = default;
+
 GameApp::~GameApp() {
     if (is_running_) {
         spdlog::warn("GameApp 被销毁时没有显式关闭。现在关闭。 ...");
         close();
     }
-};
+}
 
 void GameApp::run() {
     if (!init()) {
         spdlog::error("初始化失败，无法运行游戏。");
         return;
     }
+
     while (is_running_) {
         time_->update();
-        auto delta_time = time_->getDeltaTime();
+        float delta_time = time_->getDeltaTime();
         input_manager_->update();  // 每帧首先更新输入管理器
 
         handleEvents();
         update(delta_time);
         render();
+
+        // spdlog::info("delta_time: {}", delta_time);
     }
+
     close();
 }
 
-void GameApp::update(float /* delta_time */) {
-    // 游戏逻辑更新
-    // testCamera();
+bool GameApp::init() {
+    spdlog::trace("初始化 GameApp ...");
+    if (!initConfig()) return false;
+    if (!initSDL()) return false;
+    if (!initTime()) return false;
+    if (!initResourceManager()) return false;
+    if (!initRenderer()) return false;
+    if (!initCamera()) return false;
+    if (!initInputManager()) return false;
+
+    // 测试资源管理器
+    testResourceManager();
+
+    is_running_ = true;
+    spdlog::trace("GameApp 初始化成功。");
+    return true;
 }
 
 void GameApp::handleEvents() {
@@ -48,46 +68,48 @@ void GameApp::handleEvents() {
     testInputManager();
 }
 
-void GameApp::render() {
-    // 清除屏幕
-    SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
-    SDL_RenderClear(sdl_renderer_);
-
-    // 这里可以添加渲染代码
-
-    // 更新屏幕
-    SDL_RenderPresent(sdl_renderer_);
+void GameApp::update(float /* delta_time */) {
+    // 游戏逻辑更新
+    testCamera();
 }
 
-bool GameApp::init() {
-    spdlog::set_level(spdlog::level::trace);
-    spdlog::trace("初始化 GameApp ...");
-    if (!initConfig()) {
-        spdlog::error("初始化配置失败。");
-        return false;
-    }
-    if (!initSDL()) {
-        spdlog::error("初始化 SDL 失败。");
-        return false;
-    }
-    if (!initTime()) {
-        spdlog::error("初始化时间管理失败。");
-        return false;
-    }
-    if (!initResourceManager()) {
-        spdlog::error("初始化资源管理器失败。");
-        return false;
-    }
-    if (!initInputManager()) {
-        spdlog::error("初始化输入管理器失败。");
-        return false;
-    }
+void GameApp::render() {
+    // 1. 清除屏幕
+    renderer_->clearScreen();
 
-    // 测试资源管理器
-    testResourceManager();
+    // 2. 具体渲染代码
+    testRenderer();
 
-    is_running_ = true;
-    spdlog::info("初始化 GameApp 成功。");
+    // 3. 更新屏幕显示
+    renderer_->present();
+}
+
+void GameApp::close() {
+    spdlog::trace("关闭 GameApp ...");
+
+    // 为了确保正确的销毁顺序，有些智能指针对象也需要手动管理
+    resource_manager_.reset();
+
+    if (sdl_renderer_ != nullptr) {
+        SDL_DestroyRenderer(sdl_renderer_);
+        sdl_renderer_ = nullptr;
+    }
+    if (window_ != nullptr) {
+        SDL_DestroyWindow(window_);
+        window_ = nullptr;
+    }
+    SDL_Quit();
+    is_running_ = false;
+}
+
+bool GameApp::initConfig() {
+    try {
+        config_ = std::make_unique<engine::core::Config>("assets/config.json");
+    } catch (const std::exception& e) {
+        spdlog::error("初始化配置失败: {}", e.what());
+        return false;
+    }
+    spdlog::trace("配置初始化成功。");
     return true;
 }
 
@@ -120,17 +142,6 @@ bool GameApp::initSDL() {
     return true;
 }
 
-bool GameApp::initConfig() {
-    try {
-        config_ = std::make_unique<engine::core::Config>("assets/config.json");
-    } catch (const std::exception& e) {
-        spdlog::error("初始化配置失败: {}", e.what());
-        return false;
-    }
-    spdlog::trace("配置初始化成功。");
-    return true;
-}
-
 bool GameApp::initTime() {
     try {
         time_ = std::make_unique<Time>();
@@ -154,6 +165,28 @@ bool GameApp::initResourceManager() {
     return true;
 }
 
+bool GameApp::initRenderer() {
+    try {
+        renderer_ = std::make_unique<engine::render::Renderer>(sdl_renderer_, resource_manager_.get());
+    } catch (const std::exception& e) {
+        spdlog::error("初始化渲染器失败: {}", e.what());
+        return false;
+    }
+    spdlog::trace("渲染器初始化成功。");
+    return true;
+}
+
+bool GameApp::initCamera() {
+    try {
+        camera_ = std::make_unique<engine::render::Camera>(glm::vec2(config_->window_width_ / 2, config_->window_height_ / 2));
+    } catch (const std::exception& e) {
+        spdlog::error("初始化相机失败: {}", e.what());
+        return false;
+    }
+    spdlog::trace("相机初始化成功。");
+    return true;
+}
+
 bool GameApp::initInputManager() {
     try {
         input_manager_ = std::make_unique<engine::input::InputManager>(sdl_renderer_, config_.get());
@@ -165,22 +198,7 @@ bool GameApp::initInputManager() {
     return true;
 }
 
-void GameApp::close() {
-    spdlog::trace("关闭 GameApp ...");
-    // 为了确保正确的销毁顺序，有些智能指针对象也需要手动管理
-    resource_manager_.reset();
-
-    if (sdl_renderer_ != nullptr) {
-        SDL_DestroyRenderer(sdl_renderer_);
-        sdl_renderer_ = nullptr;
-    }
-    if (window_ != nullptr) {
-        SDL_DestroyWindow(window_);
-        window_ = nullptr;
-    }
-    SDL_Quit();
-    is_running_ = false;
-}
+// --- 测试用函数 ---
 
 void GameApp::testResourceManager() {
     resource_manager_->getTexture("assets/textures/Actors/eagle-attack.png");
@@ -190,6 +208,28 @@ void GameApp::testResourceManager() {
     resource_manager_->unloadTexture("assets/textures/Actors/eagle-attack.png");
     resource_manager_->unloadFont("assets/fonts/VonwaonBitmap-16px.ttf", 16);
     resource_manager_->unloadSound("assets/audio/button_click.wav");
+}
+
+void GameApp::testRenderer() {
+    engine::render::Sprite sprite_world("assets/textures/Actors/frog.png");
+    engine::render::Sprite sprite_ui("assets/textures/UI/buttons/Start1.png");
+    engine::render::Sprite sprite_parallax("assets/textures/Layers/back.png");
+
+    static float rotation = 0.0F;
+    rotation += 0.1F;
+
+    // 注意渲染顺序
+    renderer_->drawParallax(*camera_, sprite_parallax, glm::vec2(100, 100), glm::vec2(0.5F, 0.5F), glm::bvec2(true, false));
+    renderer_->drawSprite(*camera_, sprite_world, glm::vec2(200, 200), glm::vec2(1.0F, 1.0F), rotation);
+    renderer_->drawUISprite(sprite_ui, glm::vec2(100, 100));
+}
+
+void GameApp::testCamera() {
+    const auto* key_state = SDL_GetKeyboardState(nullptr);
+    if (key_state[SDL_SCANCODE_UP]) camera_->move(glm::vec2(0, -1));
+    if (key_state[SDL_SCANCODE_DOWN]) camera_->move(glm::vec2(0, 1));
+    if (key_state[SDL_SCANCODE_LEFT]) camera_->move(glm::vec2(-1, 0));
+    if (key_state[SDL_SCANCODE_RIGHT]) camera_->move(glm::vec2(1, 0));
 }
 
 void GameApp::testInputManager() {
